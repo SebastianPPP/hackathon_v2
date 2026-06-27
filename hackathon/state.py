@@ -1,33 +1,31 @@
-from typing import Optional
-
+# Zmień import na samym górze pliku:
 import reflex as rx
-import asyncio
+from reflex.model import Model  # <--- Dodaj ten konkretny import
 from datetime import datetime
+from typing import List
 
 # ==========================================
-# 1. MODELE BAZY DANYCH (ZAKTUALIZOWANE)
+# 1. MODELE BAZY DANYCH (SKŁADNIA REFLEX 0.9)
 # ==========================================
 
-class UserProfile(rx.Model):
+class UserProfile(Model, table=True):  # <--- Teraz table=True zadziała poprawnie z tym importem!
     """Tabela użytkowników w bazie danych"""
     username: str
     password_hash: str
     nick: str
-    city: str = "Gdańsk"      # Nowe pole z formularza
-    district: str = ""        # Nowe pole z formularza
+    city: str = "Gdańsk"
+    district: str = ""
     eco_points: int = 0
     bottles_returned: int = 0
     co2_saved: float = 0.0
-    
 
 
-class ScanHistory(rx.Model):
+class ScanHistory(Model, table=True):  # <--- Tutaj też zmieniamy
     """Tabela historii zwrotów/skanowań odpadów"""
     user_id: int
     item_name: str
     points_gained: int
     scanned_at: datetime = datetime.utcnow()
-
 
 # ==========================================
 # 2. STAN APLIKACJI
@@ -48,7 +46,7 @@ class State(rx.State):
     login_username: str = ""
     login_password: str = ""
 
-    # --- Nowe pola formularza rejestracji ---
+    # --- Pola formularza rejestracji ---
     reg_nick: str = ""
     reg_username: str = ""
     reg_password: str = ""
@@ -56,10 +54,10 @@ class State(rx.State):
     reg_city: str = ""
     reg_district: str = ""
     
-    # Zmienna wymagana przez widok zespołu do wyświetlenia komunikatu sukcesu
     show_success: bool = False
     
-    current_user = []
+    # Bezpieczna deklaracja typu listy akceptowana przez starsze wersje Reflexa
+    current_user: List[UserProfile] = []
 
     def start_app(self):
         self.is_started = True
@@ -75,7 +73,7 @@ class State(rx.State):
         self.eco_points += 50
         self.bottles_returned += 1
 
-    # --- Settery tekstowe ---
+    # --- Setters ---
     def change_username(self, val: str): self.login_username = val
     def change_password(self, val: str): self.login_password = val
     
@@ -86,16 +84,15 @@ class State(rx.State):
     def change_reg_city(self, val: str): self.reg_city = val
     def change_reg_district(self, val: str): self.reg_district = val
 
-    # --- Kontrola dostępu (Zabezpieczenie tras) ---
+    # --- Kontrola dostępu ---
     def check_auth(self):
-        """Funkcja on_load sprawdzająca czy jesteśmy zalogowani"""
-        pass
+        """Zabezpieczenie przed ponownym logowaniem aktywnych sesji"""
         if self.is_logged_in == "true":
             return rx.redirect("/home")
 
     # --- Logika biznesowa ---
     def login(self):
-        """Funkcja weryfikująca użytkownika w bazie danych"""
+        """Weryfikacja logowania z bazy danych"""
         if not self.login_username or not self.login_password:
             return rx.window_alert("Wypełnij wszystkie pola!")
 
@@ -110,12 +107,12 @@ class State(rx.State):
                 self.eco_points = user.eco_points
                 self.bottles_returned = user.bottles_returned
                 self.co2_saved = user.co2_saved
-                return rx.redirect("/home")  # Przekierowanie do dashboardu mobile
+                return rx.redirect("/home")
             else:
                 return rx.window_alert("Błędny login lub hasło!")
 
     def register(self):
-        """Funkcja rejestrująca nowego użytkownika w bazie"""
+        """Proces rejestracji nowego użytkownika"""
         if not self.reg_nick or not self.reg_username or not self.reg_password:
             return rx.window_alert("Wypełnij wymagane pola (Login, Email, Hasło)!")
             
@@ -123,14 +120,12 @@ class State(rx.State):
             return rx.window_alert("Hasła nie są identyczne!")
 
         with rx.session() as session:
-            # Sprawdzamy czy login (email) jest już zajęty
             existing = session.exec(
                 UserProfile.select().where(UserProfile.username == self.reg_username)
             ).first()
             if existing:
                 return rx.window_alert("Użytkownik o tym adresie Email już istnieje!")
 
-            # Tworzymy nowy profil użytkownika
             new_user = UserProfile(
                 username=self.reg_username,
                 password_hash=self.reg_password,
@@ -144,7 +139,6 @@ class State(rx.State):
             session.add(new_user)
             session.commit()
             
-            # Czyszczenie pól po udanej rejestracji
             self.reg_nick = ""
             self.reg_username = ""
             self.reg_password = ""
@@ -153,14 +147,15 @@ class State(rx.State):
             return [rx.window_alert("Konto utworzone pomyślnie! Zaloguj się."), rx.redirect("/")]
 
     def logout(self):
-        """Funkcja wylogowania użytkownika"""
-        self.current_user: Optional[UserProfile] = None
+        """Wylogowanie - czyszczenie listy stanowej zamiast przypisywania None"""
+        self.current_user = []
         self.is_logged_in = "false"
         self.login_username = ""
         self.login_password = ""
         return rx.redirect("/")
     
     async def handle_photo(self, files: list[rx.UploadFile]):
+        """Obsługa przesyłania zdjęcia butelki/paragonu i naliczenie punktów"""
         for file in files:
             data = await file.read()
             self.photo_data = f"data:image/jpeg;base64,{__import__('base64').b64encode(data).decode()}"

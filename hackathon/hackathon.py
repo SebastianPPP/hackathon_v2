@@ -44,13 +44,8 @@ def index() -> rx.Component:
         ),
         class_name="w-full min-h-screen bg-slate-950 flex items-center justify-center p-4"
     )
-
-#app = rx.App()
-#app.add_page(register_page, route="/register")
-#app.add_page(login_page, route="/", on_load=State.check_auth)
-#app.add_page(index, route="/home")
-
 app = rx.App()
 app.add_page(register_page, route="/register")
-app.add_page(login_page, route="/login")
-app.add_page(index, route="/")
+app.add_page(login_page, route="/", on_load=State.check_auth)
+app.add_page(index, route="/home")
+
