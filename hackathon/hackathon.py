@@ -13,7 +13,7 @@ class State(rx.State):
         self.sidebar_open = not self.sidebar_open
 
 
-# --- INTERFEJS UŻYTKOWNIKA ---
+# --- INTERFEJS UŻYTKOWNIKA aaa---
 def index() -> rx.Component:
     return rx.box(
         # 1. MENU BOCZNE (Sidebar) - wysuwane z lewej strony
