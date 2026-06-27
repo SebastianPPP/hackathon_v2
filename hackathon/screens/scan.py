@@ -27,7 +27,6 @@ def scan_screen():
                 ),
                 align="center"
             ),
-            
             class_name="w-full p-8 bg-slate-950/40 border-2 border-dashed border-slate-700 rounded-xl flex flex-col items-center justify-center my-4"
         ),
         
@@ -37,13 +36,12 @@ def scan_screen():
             class_name="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold py-2 px-4 rounded-lg transition"
         ),
         rx.button(
-            
             "💾 Zapisz wynik",
             on_click=State.save_scan,
             class_name="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition"
         ),
         rx.box(
-            rx.text(f"Zwrócone butelki w tej sesji: {State.bottles_returned}", class_name="text-sm font-medium text-slate-300"),
+            rx.text(f"Zwrócone opakowania łącznie: {State.bottles_returned}", class_name="text-sm font-medium text-slate-300"),
             class_name="bg-slate-800/50 px-4 py-2 rounded-lg border border-slate-700"
         ),
         space="4",

@@ -1,41 +1,47 @@
 import reflex as rx
 from ..state import State
 
-
-# Przykładowe dane - potem zastąpione bazą danych
-MOCK_RANKING = [
-    {"place": 1, "name": "Anna K.", "points": 3420, "bottles": 142},
-    {"place": 2, "name": "Piotr M.", "points": 2890, "bottles": 98},
-    {"place": 3, "name": "Kasia W.", "points": 2340, "bottles": 87},
-    {"place": 4, "name": "Ty", "points": 1250, "bottles": 42},
-    {"place": 5, "name": "Marek L.", "points": 980, "bottles": 31},
-]
-
-
-def ranking_row(place: int, name: str, points: int, bottles: int) -> rx.Component:
+def ranking_row(r: dict) -> rx.Component:
+    """Komponent pojedynczego wiersza w tabeli rankingu"""
     return rx.flex(
-        # Miejsce
+        # Miejsce w rankingu z dynamicznym doborem koloru przez rx.cond
         rx.text(
-            f"#{place}",
-            class_name=f"text-sm font-black w-8 " + (
-                "text-yellow-400" if place == 1 else
-                "text-slate-400" if place == 2 else
-                "text-orange-400" if place == 3 else
-                "text-slate-500"
+            f"#{r['place']}",
+            class_name="text-sm font-black w-8",
+            color=rx.cond(
+                r["place"] == 1,
+                "var(--yellow-9)", # Złoty dla #1
+                rx.cond(
+                    r["place"] == 2,
+                    "var(--slate-9)", # Srebrny/szary dla #2
+                    rx.cond(
+                        r["place"] == 3,
+                        "var(--orange-9)", # Brązowy/pomarańczowy dla #3
+                        "var(--slate-11)"  # Domyślny dla reszty
+                    )
+                )
             )
         ),
-        # Nazwa
-        rx.text(name, class_name="text-sm text-slate-300 flex-1"),
-        # Butelki
-        rx.text(f"🍾 {bottles}", class_name="text-xs text-slate-400 mr-3"),
-        # Punkty
-        rx.text(f"{points} XP", class_name="text-sm font-bold text-emerald-400"),
+        # Nazwa gracza (wyróżniona, jeśli to aktualny użytkownik)
+        rx.text(
+            r["name"], 
+            class_name=rx.cond(
+                r["name"] == "Ty",
+                "text-sm text-emerald-400 font-bold flex-1",
+                "text-sm text-slate-300 flex-1"
+            )
+        ),
+        # Łączna liczba oddanych opakowań
+        rx.text(f"🍾 {r['bottles']}", class_name="text-xs text-slate-400 mr-3"),
+        # Punkty doświadczenia (XP)
+        rx.text(f"{r['points']} XP", class_name="text-sm font-bold text-emerald-400"),
         class_name="w-full items-center py-3 border-b border-slate-800/50"
     )
 
 
 def ranking_screen():
     return rx.vstack(
+        # Sekcja nagłówka
         rx.vstack(
             rx.text("🏆", class_name="text-4xl"),
             rx.text("Ranking EcoSphere", class_name="text-xl font-black text-emerald-400"),
@@ -44,9 +50,16 @@ def ranking_screen():
             class_name="w-full py-4"
         ),
 
-        # Tabela rankingu
+        # Tabela rankingu generowana dynamicznie na podstawie bazy danych
         rx.box(
-            *[ranking_row(r["place"], r["name"], r["points"], r["bottles"]) for r in MOCK_RANKING],
+            rx.cond(
+                State.ranking_list.length() > 0,
+                rx.vstack(
+                    rx.foreach(State.ranking_list, ranking_row),
+                    class_name="w-full"
+                ),
+                rx.text("Brak zarejestrowanych graczy.", class_name="text-xs text-slate-400 text-center py-4")
+            ),
             class_name="w-full bg-slate-800/40 border border-slate-700/50 rounded-xl px-4"
         ),
 
