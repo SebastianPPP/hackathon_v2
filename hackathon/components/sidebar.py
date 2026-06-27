@@ -10,9 +10,21 @@ def sidebar() -> rx.Component:
                 rx.button("✕", on_click=State.toggle_sidebar, class_name="text-slate-400 text-sm"),
                 class_name="w-full justify-between items-center mb-6"
             ),
-            rx.text("Mój Profil", class_name="text-sm text-slate-300 py-2 w-full border-b border-slate-800"),
-            rx.text("Odbierz bilet ZTM", class_name="text-sm text-slate-300 py-2 w-full border-b border-slate-800"),
-            rx.text("Ustawienia", class_name="text-sm text-slate-300 py-2 w-full border-b border-slate-800"),
+            rx.button(
+                "Mój Profil",
+                on_click=lambda: [State.set_tab("profile"), State.toggle_sidebar()],
+                class_name="text-sm text-slate-300 py-2 w-full text-left border-b border-slate-800"
+            ),
+            rx.button(
+                "Odbierz nagrodę!",
+                on_click=lambda: [State.set_tab("prize"), State.toggle_sidebar()],
+                class_name="text-sm text-slate-300 py-2 w-full text-left border-b border-slate-800"
+            ),
+            rx.button(
+                "Ustawienia",
+                on_click=lambda: [State.set_tab("settings"), State.toggle_sidebar()],
+                class_name="text-sm text-slate-300 py-2 w-full text-left border-b border-slate-800"
+            ),
             rx.button("Wyloguj się", on_click=State.logout, class_name="text-sm text-red-400 py-2 w-full text-left border-b border-slate-800"),
             class_name="p-4 h-full"
         ),

@@ -8,6 +8,11 @@ from .components.sidebar import sidebar
 from .screens.register import register_page
 from .screens.ranking import ranking_screen
 from .components.bottombar import bottombar
+from .screens.ciekawostki import ciekawostki_screen
+
+from .screens.profile import profile_screen
+from .screens.settings import settings_screen
+from .screens.prize import prize_screen
 
 def index() -> rx.Component:
     return rx.center(
@@ -32,6 +37,10 @@ def index() -> rx.Component:
                     ("map", map_screen()),
                     ("scan", scan_screen()),
                     ("ranking", ranking_screen()),
+                    ("ciekawostki", ciekawostki_screen()),
+                    ("profile", profile_screen()),
+                    ("prize", prize_screen()),
+                    ("settings", settings_screen()),
                     home_screen()
                 ),
                 class_name="h-full overflow-y-auto"

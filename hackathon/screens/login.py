@@ -7,8 +7,7 @@ def login_screen():
     return rx.vstack(
         # Logo na górze
         rx.vstack(
-            rx.text("🌿", class_name="text-6xl"),
-            rx.text("EcoSphere", class_name="text-2xl font-black tracking-widest text-emerald-400"),
+            rx.image(src="logo.png", class_name="w-45 h-45 object-contain"),
             rx.text("Zadbaj o planetę, zbieraj punkty", class_name="text-xs text-slate-400"),
             align="center",
             class_name="w-full py-8"
@@ -23,7 +22,7 @@ def login_screen():
                     placeholder="twój@email.pl",
                     value=State.login_username,
                     on_change=State.change_username,  # Spięcie z ręczną metodą
-                    class_name="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class_name="w-full bg-slate-800 border-2 border-slate-700 rounded-xl px-4 py-3 text-base text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 ),
                 align="start",
                 class_name="w-full"
@@ -36,7 +35,7 @@ def login_screen():
                     type="password",
                     value=State.login_password,
                     on_change=State.change_password,  # Spięcie z ręczną metodą
-                    class_name="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    class_name="w-full bg-slate-800 border-2 border-slate-700 rounded-xl px-4 py-3 text-base text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 ),
                 align="start",
                 class_name="w-full"
@@ -72,7 +71,9 @@ def login_page() -> rx.Component:
     return rx.center(
         rx.box(
             login_screen(),
-            class_name="w-[380px] h-[720px] bg-slate-900 border border-slate-800 rounded-[40px] shadow-2xl relative overflow-hidden text-white"
+            class_name="w-[380px] h-[720px] border border-slate-800 rounded-[40px] shadow-2xl relative overflow-hidden text-white",
+            style={"background": "#012715"}
         ),
-        class_name="w-full min-h-screen bg-slate-950 flex items-center justify-center p-4"
+        class_name="w-full min-h-screen flex items-center justify-center p-4",
+        style={"background": "#000000"}
     )

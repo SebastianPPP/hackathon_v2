@@ -3,7 +3,13 @@ import reflex as rx
 from reflex.model import Model  # <--- Dodaj ten konkretny import
 from datetime import datetime
 from typing import List
-
+import random
+import httpx
+import os
+from dotenv import load_dotenv
+from google import genai
+load_dotenv()
+client = genai.Client()
 # ==========================================
 # 1. MODELE BAZY DANYCH (SKŁADNIA REFLEX 0.9)
 # ==========================================
@@ -41,6 +47,7 @@ class State(rx.State):
     bottles_returned: int = 0
     co2_saved: float = 0.0
     photo_data: str = ""
+    daily_fact: str = ""
 
     # --- Pola formularza logowania ---
     login_username: str = ""
@@ -53,6 +60,13 @@ class State(rx.State):
     reg_confirm_password: str = ""
     reg_city: str = ""
     reg_district: str = ""
+
+    profile_photo: str = ""
+    profile_nick: str = ""
+    profile_city: str = ""
+    profile_district: str = ""
+    profile_password: str = ""
+    profile_saved: bool = False
     
     show_success: bool = False
     
@@ -162,3 +176,58 @@ class State(rx.State):
         self.eco_points += 50
         self.bottles_returned += 1
         self.co2_saved = round(self.co2_saved + 0.08, 2)
+
+    
+    async def save_scan(self):
+        self.eco_points += 50
+        self.bottles_returned += 1
+        self.co2_saved = round(self.co2_saved + 0.08, 2)
+        self.daily_fact = "Ładowanie ciekawostki..."
+        self.current_tab = "ciekawostki"
+        yield
+        
+        # Treść promptu
+        prompt = (
+            f"Podaj jedną krótką ciekawostkę ekologiczną po polsku związaną z recyklingiem butelek. "
+            f"Użytkownik właśnie zwrócił {self.bottles_returned} butelek i zaoszczędził {self.co2_saved} kg CO₂. "
+            f"Maksymalnie 2 zdania."
+        )
+        
+        try:
+            # Asynchroniczne wywołanie darmowego i szybkiego modelu Gemini 2.5 Flash
+            response = await client.aio.models.generate_content(
+                model='gemini-2.5-flash',
+                contents=prompt,
+            )
+            
+            # Przypisanie wygenerowanego tekstu
+            self.daily_fact = response.text
+        except Exception as e:
+            self.daily_fact = "Nie udało się załadować ciekawostki, ale dobra robota!"
+            print(f"Błąd Gemini API: {e}")
+
+    def set_profile_nick(self, value: str):
+        self.profile_nick = value
+
+    def set_profile_city(self, value: str):
+        self.profile_city = value
+
+    def set_profile_district(self, value: str):
+        self.profile_district = value
+
+    def set_profile_password(self, value: str):
+        self.profile_password = value
+
+    async def handle_profile_photo(self, files: list[rx.UploadFile]):
+        for file in files:
+            data = await file.read()
+            import base64
+            self.profile_photo = f"data:image/jpeg;base64,{base64.b64encode(data).decode()}"
+
+    async def save_profile(self):
+        self.profile_saved = True
+        yield
+        import asyncio
+        await asyncio.sleep(2)
+        self.profile_saved = False
+
