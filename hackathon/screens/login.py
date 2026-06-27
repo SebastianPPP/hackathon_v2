@@ -16,20 +16,26 @@ def login_screen():
 
         # Pola logowania
         rx.vstack(
+            # Pole Login
             rx.vstack(
                 rx.text("Login", class_name="text-xs text-slate-400 uppercase font-medium mb-1"),
                 rx.input(
                     placeholder="twój@email.pl",
+                    value=State.login_username,
+                    on_change=State.change_username,  # Spięcie z ręczną metodą
                     class_name="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 ),
                 align="start",
                 class_name="w-full"
             ),
+            # Pole Hasło
             rx.vstack(
                 rx.text("Hasło", class_name="text-xs text-slate-400 uppercase font-medium mb-1"),
                 rx.input(
                     placeholder="••••••••",
                     type="password",
+                    value=State.login_password,
+                    on_change=State.change_password,  # Spięcie z ręczną metodą
                     class_name="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
                 ),
                 align="start",
