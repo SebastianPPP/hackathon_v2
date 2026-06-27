@@ -18,6 +18,7 @@ class UserProfile(rx.Model, table=True):
     eco_points: int = 0
     bottles_returned: int = 0
     co2_saved: float = 0.0
+    
 
 
 class ScanHistory(rx.Model, table=True):
@@ -41,6 +42,7 @@ class State(rx.State):
     eco_points: int = 0
     bottles_returned: int = 0
     co2_saved: float = 0.0
+    photo_data: str = ""
 
     # --- Pola formularza logowania ---
     login_username: str = ""
@@ -87,6 +89,7 @@ class State(rx.State):
     # --- Kontrola dostępu (Zabezpieczenie tras) ---
     def check_auth(self):
         """Funkcja on_load sprawdzająca czy jesteśmy zalogowani"""
+        pass
         if self.is_logged_in == "true":
             return rx.redirect("/home")
 
@@ -156,3 +159,11 @@ class State(rx.State):
         self.login_username = ""
         self.login_password = ""
         return rx.redirect("/")
+    
+    async def handle_photo(self, files: list[rx.UploadFile]):
+        for file in files:
+            data = await file.read()
+            self.photo_data = f"data:image/jpeg;base64,{__import__('base64').b64encode(data).decode()}"
+        self.eco_points += 50
+        self.bottles_returned += 1
+        self.co2_saved = round(self.co2_saved + 0.08, 2)

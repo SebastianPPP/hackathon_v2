@@ -5,36 +5,41 @@ import reflex as rx
 def home_screen():
     """Ekran Główny Dashboardu"""
     return rx.vstack(
-        # Banner psychologiczny (Poczucie sprawczości)
-        rx.box(
-            rx.heading("Twoja mikro-sprawczość", class_name="text-lg font-bold text-emerald-300 mb-1"),
-            rx.text(
-                "Każdy mały krok redukuje eko-lęk i buduje stabilniejszą przyszłość.",
-                class_name="text-xs text-slate-400"
+        # Górny pasek - punkty po prawej
+        rx.flex(
+            rx.box(),  # spacer
+            rx.box(
+                rx.text(f"🌿 {State.eco_points} XP", class_name="text-sm font-bold text-emerald-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700"),
             ),
-            class_name="bg-slate-800/60 border border-emerald-500/10 p-4 rounded-xl w-full"
+            class_name="w-full justify-between items-center"
         ),
 
-        # Mini-Siatka ze statystykami na telefon (2 kolumny)
-        rx.grid(
-            rx.box(
-                rx.text("Eco-Punkty", class_name="text-xs text-slate-400 uppercase font-medium"),
-                rx.text(f"{State.eco_points} XP", class_name="text-2xl font-black text-emerald-400 mt-1"),
-                rx.text("↑ Poziom 4", class_name="text-[10px] text-emerald-500 font-bold block"),
-                class_name="bg-slate-800/80 border border-slate-700 p-4 rounded-xl"
+        # Logo na środku
+        rx.vstack(
+            rx.text("🌿", class_name="text-6xl"),
+            rx.text("EcoSphere", class_name="text-2xl font-black tracking-widest text-emerald-400"),
+            rx.text("Zadbaj o planetę, zbieraj punkty", class_name="text-xs text-slate-400"),
+            align="center",
+            class_name="w-full py-6"
+        ),
+
+        # Przyciski akcji
+        rx.vstack(
+            rx.button(
+                rx.hstack(rx.text("📸"), rx.text("Skanuj paragon")),
+                on_click=lambda: State.set_tab("scan"),
+                class_name="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-4 rounded-xl transition text-sm"
             ),
-            rx.box(
-                rx.text("Oszczędzone CO₂", class_name="text-xs text-slate-400 uppercase font-medium"),
-                rx.text(f"{State.co2_saved} kg", class_name="text-2xl font-black text-emerald-300 mt-1"),
-                rx.text("= 1 zasadzone drzewo", class_name="text-[10px] text-slate-400 block"),
-                class_name="bg-slate-800/80 border border-slate-700 p-4 rounded-xl"
+            rx.button(
+                rx.hstack(rx.text("🗺️"), rx.text("Znajdź kaucjomat")),
+                on_click=lambda: State.set_tab("map"),
+                class_name="w-full border border-emerald-600 text-emerald-400 hover:bg-emerald-600/10 font-bold py-4 rounded-xl transition text-sm"
             ),
-            columns="2",
-            gap="3",
+            space="3",
             class_name="w-full"
         ),
 
-        # Sekcja grywalizacyjna (Wirtualny las)
+        # Wirtualny las
         rx.box(
             rx.vstack(
                 rx.text("🌲 Twój Cyfrowy Las EcoSphere", class_name="text-xs font-bold text-emerald-400 tracking-wider uppercase"),
@@ -48,6 +53,7 @@ def home_screen():
             ),
             class_name="bg-slate-800/40 border border-slate-700/50 p-4 rounded-xl w-full"
         ),
+
         space="4",
         class_name="w-full px-4 pt-16 pb-24"
     )

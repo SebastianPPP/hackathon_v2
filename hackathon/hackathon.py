@@ -6,6 +6,8 @@ from .screens.scan import scan_screen
 from .screens.login import login_screen, login_page
 from .components.sidebar import sidebar
 from .screens.register import register_page
+from .screens.ranking import ranking_screen
+from .components.bottombar import bottombar
 
 def index() -> rx.Component:
     return rx.center(
@@ -29,38 +31,26 @@ def index() -> rx.Component:
                     ("home", home_screen()),
                     ("map", map_screen()),
                     ("scan", scan_screen()),
+                    ("ranking", ranking_screen()),
                     home_screen()
                 ),
                 class_name="h-full overflow-y-auto"
             ),
 
             # 4. DOLNY PASEK NAWIGACJI (Natywny Mobile Bottom Bar)
-            rx.grid(
-                rx.button(
-                    rx.vstack(rx.text("🏠", class_name="text-lg"), rx.text("Home", class_name="text-[10px]"), space="0", align="center"),
-                    on_click=lambda: State.set_tab("home"),
-                    class_name=rx.cond(State.current_tab == "home", "text-emerald-400", "text-slate-500")
-                ),
-                rx.button(
-                    rx.vstack(rx.text("🗺️", class_name="text-lg"), rx.text("Mapa", class_name="text-[10px]"), space="0", align="center"),
-                    on_click=lambda: State.set_tab("map"),
-                    class_name=rx.cond(State.current_tab == "map", "text-emerald-400", "text-slate-500")
-                ),
-                rx.button(
-                    rx.vstack(rx.text("📸", class_name="text-lg"), rx.text("Skanuj", class_name="text-[10px]"), space="0", align="center"),
-                    on_click=lambda: State.set_tab("scan"),
-                    class_name=rx.cond(State.current_tab == "scan", "text-emerald-400", "text-slate-500")
-                ),
-                columns="3",
-                class_name="absolute bottom-0 left-0 right-0 h-16 bg-slate-950/90 backdrop-blur border-t border-slate-800/80 py-2 justify-items-center items-center z-40"
-            ),
+            bottombar(),
 
             class_name="w-[380px] h-[720px] bg-slate-900 border border-slate-800 rounded-[40px] shadow-2xl relative overflow-hidden text-white"
         ),
         class_name="w-full min-h-screen bg-slate-950 flex items-center justify-center p-4"
     )
 
+#app = rx.App()
+#app.add_page(register_page, route="/register")
+#app.add_page(login_page, route="/", on_load=State.check_auth)
+#app.add_page(index, route="/home")
+
 app = rx.App()
 app.add_page(register_page, route="/register")
-app.add_page(login_page, route="/", on_load=State.check_auth)
-app.add_page(index, route="/home")
+app.add_page(login_page, route="/login")
+app.add_page(index, route="/")
