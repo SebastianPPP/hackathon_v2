@@ -1,4 +1,5 @@
 import reflex as rx
+import asyncio
 
 # --- STAN APLIKACJI (Zarządzanie telefonem i AI) ---
 class State(rx.State):
@@ -9,6 +10,8 @@ class State(rx.State):
     eco_points: int = 1250
     bottles_returned: int = 42
     co2_saved: float = 3.4
+    show_success: bool = False
+
 
     def start_app(self):
         self.is_started = True
@@ -38,3 +41,14 @@ class State(rx.State):
         print(f"is_logged_in = {self.is_logged_in}")
         if self.is_logged_in != "true":
             return rx.redirect("/")
+        
+    def register(self):
+        self.show_success = True
+        return State.redirect_after_register
+    
+    async def register(self):
+        self.show_success = True
+        yield
+        await asyncio.sleep(3)
+        self.show_success = False
+        yield rx.redirect("/")

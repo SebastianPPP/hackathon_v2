@@ -49,8 +49,17 @@ def register_screen():
         ),
 
         # Przycisk rejestracji
+        rx.cond(
+            State.show_success,
+            rx.box(
+                rx.text("✅ Rejestracja przebiegła pomyślnie!", class_name="text-sm text-emerald-400 font-medium"),
+                class_name="w-full bg-emerald-900/40 border border-emerald-500/30 rounded-xl px-4 py-3 text-center"
+            ),
+            rx.text("")
+        ),
         rx.button(
             "Zarejestruj się",
+            on_click=State.register,
             class_name="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 rounded-xl transition mt-2"
         ),
 
