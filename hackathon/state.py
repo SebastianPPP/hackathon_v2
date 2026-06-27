@@ -8,7 +8,7 @@ from datetime import datetime
 # 1. MODELE BAZY DANYCH (ZAKTUALIZOWANE)
 # ==========================================
 
-class UserProfile(rx.Model, table=True):
+class UserProfile(rx.Model):
     """Tabela użytkowników w bazie danych"""
     username: str
     password_hash: str
@@ -21,7 +21,7 @@ class UserProfile(rx.Model, table=True):
     
 
 
-class ScanHistory(rx.Model, table=True):
+class ScanHistory(rx.Model):
     """Tabela historii zwrotów/skanowań odpadów"""
     user_id: int
     item_name: str
@@ -59,7 +59,7 @@ class State(rx.State):
     # Zmienna wymagana przez widok zespołu do wyświetlenia komunikatu sukcesu
     show_success: bool = False
     
-    current_user: Optional[UserProfile] = None
+    current_user = []
 
     def start_app(self):
         self.is_started = True
@@ -105,7 +105,7 @@ class State(rx.State):
             ).first()
 
             if user and user.password_hash == self.login_password:
-                self.current_user = user
+                self.current_user = [user]
                 self.is_logged_in = "true"
                 self.eco_points = user.eco_points
                 self.bottles_returned = user.bottles_returned
