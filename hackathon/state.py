@@ -4,7 +4,8 @@ import reflex as rx
 class State(rx.State):
     is_started: bool = False
     sidebar_open: bool = False
-    current_tab: str = "home"  # Kontroluje, co wyświetla się na ekranie telefonu
+    is_logged_in: str = rx.LocalStorage("false", name="is_logged_in")    
+    current_tab: str = "home"  
     eco_points: int = 1250
     bottles_returned: int = 42
     co2_saved: float = 3.4
@@ -23,3 +24,15 @@ class State(rx.State):
         self.eco_points += 50
         self.bottles_returned += 1
         self.co2_saved = round(self.co2_saved + 0.08, 2)
+
+    def logout(self):
+        self.is_logged_in = "false"
+        return rx.redirect("/")
+
+    def login(self):
+        self.is_logged_in = "true"
+        return rx.redirect("/home")
+    
+    def check_auth(self):
+        if self.is_logged_in != "true":
+            return rx.redirect("/")
