@@ -5,6 +5,7 @@ from .screens.map import map_screen
 from .screens.scan import scan_screen
 from .screens.login import login_screen, login_page
 from .components.sidebar import sidebar
+from .screens.register import register_page
 
 def index() -> rx.Component:
     return rx.center(
@@ -60,5 +61,6 @@ def index() -> rx.Component:
     )
 
 app = rx.App()
-app.add_page(login_page, route="/")    
+app.add_page(register_page, route="/register")
+app.add_page(login_page, route="/", on_load=State.check_auth)
 app.add_page(index, route="/home")

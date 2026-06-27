@@ -50,7 +50,7 @@ def login_screen():
         rx.vstack(
             rx.text("Nie masz konta?", class_name="text-xs text-slate-400"),
             rx.button(
-                "Zarejestruj się",
+                "Zarejestruj się", on_click=rx.redirect("/register"),
                 class_name="w-full border border-emerald-600 text-emerald-400 hover:bg-emerald-600/10 font-bold py-3 rounded-xl transition"
             ),
             align="center",

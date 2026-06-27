@@ -31,8 +31,10 @@ class State(rx.State):
 
     def login(self):
         self.is_logged_in = "true"
+        print(f"po login: {self.is_logged_in}")
         return rx.redirect("/home")
     
     def check_auth(self):
+        print(f"is_logged_in = {self.is_logged_in}")
         if self.is_logged_in != "true":
             return rx.redirect("/")
