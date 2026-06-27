@@ -13,7 +13,7 @@ def register_screen():
             class_name="w-full py-4"
         ),
 
-        # Pola formularza połączone ze Stanem
+        # Pola formularza
         rx.vstack(
             rx.vstack(
                 rx.text("Nick / Imię", class_name="text-xs text-slate-400 uppercase font-medium mb-1"),
@@ -48,7 +48,7 @@ def register_screen():
             space="3", class_name="w-full"
         ),
 
-        # Przycisk rejestracji
+        # Baner sukcesu rejestracji
         rx.cond(
             State.show_success,
             rx.box(
@@ -57,9 +57,11 @@ def register_screen():
             ),
             rx.text("")
         ),
+
+        # Przycisk rejestracji
         rx.button(
             "Zarejestruj się",
-            on_click=State.register,  # Wywołanie rejestracji bazodanowej
+            on_click=State.register,
             class_name="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl transition mt-4"
         ),
 
@@ -84,7 +86,7 @@ def register_page() -> rx.Component:
         rx.box(
             rx.box(
                 register_screen(),
-                class_name="h-full overflow-y-auto"  # Zapewnia przewijanie długiego formularza na makiecie telefonu
+                class_name="h-full overflow-y-auto"
             ),
             class_name="w-[380px] h-[720px] bg-slate-900 border border-slate-800 rounded-[40px] shadow-2xl relative overflow-hidden text-white"
         ),

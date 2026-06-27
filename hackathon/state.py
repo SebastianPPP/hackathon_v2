@@ -54,7 +54,10 @@ class State(rx.State):
     reg_city: str = ""
     reg_district: str = ""
     
-    current_user: UserProfile = None
+    # Zmienna wymagana przez widok zespołu do wyświetlenia komunikatu sukcesu
+    show_success: bool = False
+    
+    current_user: Optional[UserProfile] = None
 
     def start_app(self):
         self.is_started = True
